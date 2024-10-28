@@ -1,66 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:padding="10dp">
+    android:background="@color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical">
-
-        <EditText
-            android:id="@+id/search_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingStart="5dp"
-            android:layout_weight="2"
-            android:textSize="14sp"
-            android:inputType="text"
-            android:lines="1"
-            android:maxLength="60"
-            android:hint="HINT"
-            android:backgroundTint="@color/black"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:layout_marginEnd="10dp"/>
-
-        <Button
-            android:id="@+id/search_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="16sp"
-            android:backgroundTint="@color/black"
-            app:cornerRadius="5dp"
-            android:text="SEARCH"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/placeholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/something_went_wrong"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#EE204D"
-        android:layout_gravity="center"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMovie"
+    <EditText android:id="@+id/queryInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
-        tools:listitem="@layout/movie_item"
-        app:spanCount="2"
-        tools:itemCount="5" />
+        android:layout_margin="8dp"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/black"
+        android:imeOptions="actionDone"
+        android:singleLine="true"/>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar android:id="@+id/progressBar"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/black"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/locations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/placeholderMessage"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+    </FrameLayout>
 </LinearLayout>

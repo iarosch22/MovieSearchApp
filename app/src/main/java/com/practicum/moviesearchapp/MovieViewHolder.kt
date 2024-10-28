@@ -8,21 +8,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class MovieViewHolder(parent: ViewGroup): RecyclerView.ViewHolder(
-    LayoutInflater.from(parent.context)
+class MovieViewHolder(parent: ViewGroup) :
+    RecyclerView.ViewHolder(LayoutInflater.from(parent.context)
         .inflate(R.layout.movie_item, parent, false)) {
 
-    private val image: ImageView = itemView.findViewById(R.id.ivImage)
-    private val title: TextView = itemView.findViewById(R.id.tvTitle)
-    private val description: TextView = itemView.findViewById(R.id.tvDescription)
+    var cover: ImageView = itemView.findViewById(R.id.cover)
+    var title: TextView = itemView.findViewById(R.id.title)
+    var description: TextView = itemView.findViewById(R.id.description)
 
-    fun bind(item: Movie) {
+    fun bind(movie: Movie) {
         Glide.with(itemView)
-            .load(item.image)
-            .into(image)
+            .load(movie.image)
+            .into(cover)
 
-        title.text = item.title
-        description.text = item.description
+        title.text = movie.title
+        description.text = movie.description
     }
-
 }
