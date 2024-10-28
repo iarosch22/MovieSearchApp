@@ -1,6 +1,7 @@
-package com.practicum.moviesearchapp
+package com.practicum.moviesearchapp.util
 
 import android.app.Activity
+import android.content.Context
 import com.practicum.moviesearchapp.data.network.MoviesRepositoryImpl
 import com.practicum.moviesearchapp.data.network.RetrofitNetworkClient
 import com.practicum.moviesearchapp.domain.api.MoviesInteractor
@@ -11,12 +12,12 @@ import com.practicum.moviesearchapp.ui.movies.MoviesAdapter
 import com.practicum.moviesearchapp.ui.poster.PosterController
 
 object Creator {
-    private fun getMoviesRepository(): MoviesRepository {
-        return MoviesRepositoryImpl(RetrofitNetworkClient())
+    private fun getMoviesRepository(context: Context): MoviesRepository {
+        return MoviesRepositoryImpl(RetrofitNetworkClient(context))
     }
 
-    fun provideMoviesInteractor(): MoviesInteractor {
-        return MoviesInteractorImpl(getMoviesRepository())
+    fun provideMoviesInteractor(context: Context): MoviesInteractor {
+        return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
     fun provideMoviesSearchController(activity: Activity, adapter: MoviesAdapter): MoviesSearchController {
