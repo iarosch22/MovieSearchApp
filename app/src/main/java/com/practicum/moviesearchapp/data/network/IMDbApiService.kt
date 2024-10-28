@@ -1,5 +1,6 @@
-package com.practicum.moviesearchapp
+package com.practicum.moviesearchapp.data.network
 
+import com.practicum.moviesearchapp.data.dto.MoviesSearchResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
