@@ -11,12 +11,14 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.moviesearchapp.util.Creator
 import com.practicum.moviesearchapp.ui.poster.PosterActivity
 import com.practicum.moviesearchapp.R
+import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesView
 
 class MoviesActivity : Activity(), MoviesView {
@@ -35,7 +37,7 @@ class MoviesActivity : Activity(), MoviesView {
 
     private var textWatcher: TextWatcher? = null
 
-    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this, adapter)
+    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(moviesView = this, context = this)
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
@@ -68,8 +70,6 @@ class MoviesActivity : Activity(), MoviesView {
         }
 
         textWatcher?.let { queryInput.addTextChangedListener(it) }
-
-        moviesSearchPresenter.onCreate()
     }
 
     override fun onDestroy() {
@@ -97,6 +97,20 @@ class MoviesActivity : Activity(), MoviesView {
 
     override fun showProgressBar(isVisible: Boolean) {
         progressBar.isVisible = isVisible
+    }
+
+    override fun changePlaceholderText(newPlaceholderText: String) {
+        placeholderMessage.text = newPlaceholderText
+    }
+
+    override fun updateMoviesList(newMoviesList: List<Movie>) {
+        adapter.movies.clear()
+        adapter.movies.addAll(newMoviesList)
+        adapter.notifyDataSetChanged()
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     companion object {

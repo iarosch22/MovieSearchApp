@@ -1,26 +1,19 @@
 package com.practicum.moviesearchapp.presentation.movies
 
-import android.app.Activity
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.practicum.moviesearchapp.util.Creator
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.ui.movies.MoviesAdapter
+import com.practicum.moviesearchapp.util.Creator
 
-class MoviesSearchPresenter(private val view: MoviesView, private val adapter: MoviesAdapter) {
+class MoviesSearchPresenter(private val view: MoviesView, private val context: Context) {
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(view)
+    private val moviesInteractor = Creator.provideMoviesInteractor(context)
 
     private var lastSearchText: String? = null
 
@@ -31,10 +24,6 @@ class MoviesSearchPresenter(private val view: MoviesView, private val adapter: M
     private val searchRunnable = Runnable {
         val newSearchText = lastSearchText ?: ""
         searchRequest(newSearchText)
-    }
-
-    fun onCreate() {
-        adapter.movies = movies
     }
 
     fun onDestroy() {
@@ -61,13 +50,13 @@ class MoviesSearchPresenter(private val view: MoviesView, private val adapter: M
                         if (foundMovies != null) {
                             movies.clear()
                             movies.addAll(foundMovies)
-                            adapter.notifyDataSetChanged()
+                            view.updateMoviesList(movies)
                             view.showMoviesList(true)
                         }
                         if (errorMessage != null) {
-                            showMessage(view.getString(R.string.something_went_wrong), errorMessage)
+                            showMessage(context.getString(R.string.something_went_wrong), errorMessage)
                         } else if (movies.isEmpty()) {
-                            showMessage(view.getString(R.string.nothing_found), "")
+                            showMessage(context.getString(R.string.nothing_found), "")
                         } else {
                             hideMessage()
                         }
@@ -79,21 +68,21 @@ class MoviesSearchPresenter(private val view: MoviesView, private val adapter: M
 
     private fun showMessage(text: String, additionalMessage: String) {
         if (text.isNotEmpty()) {
-            placeholderMessage.visibility = View.VISIBLE
+            view.showPlaceholderMessage(true)
             movies.clear()
-            adapter.notifyDataSetChanged()
-            placeholderMessage.text = text
+            view.updateMoviesList(movies)
+
+            view.changePlaceholderText(text)
             if (additionalMessage.isNotEmpty()) {
-                Toast.makeText(activity, additionalMessage, Toast.LENGTH_LONG)
-                    .show()
+                view.showMessage(additionalMessage)
             }
         } else {
-            placeholderMessage.visibility = View.GONE
+            view.showPlaceholderMessage(false)
         }
     }
 
     private fun hideMessage() {
-        placeholderMessage.visibility = View.GONE
+        view.showPlaceholderMessage(false)
     }
 
     companion object {

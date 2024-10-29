@@ -8,9 +8,9 @@ import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.api.MoviesRepository
 import com.practicum.moviesearchapp.domain.impl.MoviesInteractorImpl
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchPresenter
-import com.practicum.moviesearchapp.ui.movies.MoviesAdapter
-import com.practicum.moviesearchapp.presentation.PosterController
+import com.practicum.moviesearchapp.presentation.poster.PosterPresenter
 import com.practicum.moviesearchapp.presentation.movies.MoviesView
+import com.practicum.moviesearchapp.presentation.poster.PosterView
 
 object Creator {
     private fun getMoviesRepository(context: Context): MoviesRepository {
@@ -21,11 +21,11 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchPresenter(moviesView: MoviesView, adapter: MoviesAdapter): MoviesSearchPresenter {
-        return MoviesSearchPresenter(moviesView, adapter)
+    fun provideMoviesSearchPresenter(moviesView: MoviesView, context: Context): MoviesSearchPresenter {
+        return MoviesSearchPresenter(view = moviesView, context = context)
     }
 
-    fun providePosterController(activity: Activity): PosterController {
-        return PosterController(activity)
+    fun providePosterPresenter(posterView: PosterView, imageUrl: String): PosterPresenter {
+        return PosterPresenter(posterView, imageUrl)
     }
 }
