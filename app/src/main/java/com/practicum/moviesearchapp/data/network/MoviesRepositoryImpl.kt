@@ -16,6 +16,7 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRep
             -1 -> {
                 Resource.Error("Проверьте подключение к интернету")
             }
+
             200 -> {
                 Resource.Success((response as MoviesSearchResponse).results.map {
                     Movie(it.id, it.resultType, it.image, it.title, it.description)})

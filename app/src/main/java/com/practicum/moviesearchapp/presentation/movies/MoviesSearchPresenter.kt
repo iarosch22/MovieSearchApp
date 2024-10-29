@@ -1,4 +1,4 @@
-package com.practicum.moviesearchapp.presentation
+package com.practicum.moviesearchapp.presentation.movies
 
 import android.app.Activity
 import android.os.Handler
@@ -18,7 +18,7 @@ import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.ui.movies.MoviesAdapter
 
-class MoviesSearchController(private val activity: Activity, private val adapter: MoviesAdapter) {
+class MoviesSearchPresenter(private val activity: Activity, private val adapter: MoviesAdapter) {
 
     private val moviesInteractor = Creator.provideMoviesInteractor(activity)
 

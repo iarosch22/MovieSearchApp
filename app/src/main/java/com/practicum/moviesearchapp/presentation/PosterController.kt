@@ -1,4 +1,4 @@
-package com.practicum.moviesearchapp.ui.poster
+package com.practicum.moviesearchapp.presentation
 
 import android.app.Activity
 import android.widget.ImageView

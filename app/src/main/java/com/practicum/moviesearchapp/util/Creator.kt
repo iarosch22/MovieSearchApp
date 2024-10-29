@@ -7,9 +7,9 @@ import com.practicum.moviesearchapp.data.network.RetrofitNetworkClient
 import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.api.MoviesRepository
 import com.practicum.moviesearchapp.domain.impl.MoviesInteractorImpl
-import com.practicum.moviesearchapp.presentation.MoviesSearchController
+import com.practicum.moviesearchapp.presentation.movies.MoviesSearchPresenter
 import com.practicum.moviesearchapp.ui.movies.MoviesAdapter
-import com.practicum.moviesearchapp.ui.poster.PosterController
+import com.practicum.moviesearchapp.presentation.PosterController
 
 object Creator {
     private fun getMoviesRepository(context: Context): MoviesRepository {
@@ -20,8 +20,8 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchController(activity: Activity, adapter: MoviesAdapter): MoviesSearchController {
-        return MoviesSearchController(activity, adapter)
+    fun provideMoviesSearchPresenter(activity: Activity, adapter: MoviesAdapter): MoviesSearchPresenter {
+        return MoviesSearchPresenter(activity, adapter)
     }
 
     fun providePosterController(activity: Activity): PosterController {

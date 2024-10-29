@@ -8,8 +8,9 @@ import android.os.Looper
 import com.practicum.moviesearchapp.util.Creator
 import com.practicum.moviesearchapp.ui.poster.PosterActivity
 import com.practicum.moviesearchapp.R
+import com.practicum.moviesearchapp.presentation.movies.MoviesView
 
-class MoviesActivity : Activity() {
+class MoviesActivity : Activity(), MoviesView {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -27,18 +28,18 @@ class MoviesActivity : Activity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val moviesSearchController = Creator.provideMoviesSearchController(this, adapter)
+    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this, adapter)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movies)
 
-        moviesSearchController.onCreate()
+        moviesSearchPresenter.onCreate()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        moviesSearchController.onDestroy()
+        moviesSearchPresenter.onDestroy()
     }
 
     private fun clickDebounce() : Boolean {
