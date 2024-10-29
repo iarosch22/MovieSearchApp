@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.moviesearchapp.util.Creator
@@ -87,15 +88,15 @@ class MoviesActivity : Activity(), MoviesView {
     }
 
     override fun showPlaceholderMessage(isVisible: Boolean) {
-        placeholderMessage.visibility = if (isVisible) View.VISIBLE else View.GONE
+        placeholderMessage.isVisible = isVisible
     }
 
     override fun showMoviesList(isVisible: Boolean) {
-        moviesList.visibility = if (isVisible) View.VISIBLE else View.GONE
+        moviesList.isVisible = isVisible
     }
 
     override fun showProgressBar(isVisible: Boolean) {
-        progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
+        progressBar.isVisible = isVisible
     }
 
     companion object {
