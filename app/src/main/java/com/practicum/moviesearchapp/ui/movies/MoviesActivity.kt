@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -19,10 +20,6 @@ import com.practicum.moviesearchapp.presentation.movies.MoviesView
 
 class MoviesActivity : Activity(), MoviesView {
 
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-    }
-
     private val adapter = MoviesAdapter {
         if (clickDebounce()) {
             val intent = Intent(this, PosterActivity::class.java)
@@ -34,6 +31,8 @@ class MoviesActivity : Activity(), MoviesView {
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())
+
+    private var textWatcher: TextWatcher? = null
 
     private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this, adapter)
 
@@ -54,24 +53,27 @@ class MoviesActivity : Activity(), MoviesView {
         moviesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         moviesList.adapter = adapter
 
-        queryInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                searchDebounce()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                moviesSearchPresenter.searchDebounce(changedText = s?.toString() ?: "")
             }
 
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(s: Editable?) {
             }
 
-        })
+        }
+
+        textWatcher?.let { queryInput.addTextChangedListener(it) }
 
         moviesSearchPresenter.onCreate()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        textWatcher?.let { queryInput.removeTextChangedListener(it) }
         moviesSearchPresenter.onDestroy()
     }
 
@@ -82,6 +84,22 @@ class MoviesActivity : Activity(), MoviesView {
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
+    }
+
+    override fun showPlaceholderMessage(isVisible: Boolean) {
+        placeholderMessage.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    override fun showMoviesList(isVisible: Boolean) {
+        moviesList.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    override fun showProgressBar(isVisible: Boolean) {
+        progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
 }
