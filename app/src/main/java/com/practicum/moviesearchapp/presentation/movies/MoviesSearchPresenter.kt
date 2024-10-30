@@ -8,21 +8,11 @@ import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.util.Creator
+import moxy.MvpPresenter
 
-class MoviesSearchPresenter(private val context: Context) {
+class MoviesSearchPresenter(private val context: Context): MvpPresenter<MoviesView>() {
 
-    private var view: MoviesView? = null
-    private var state: MoviesState? = null
     private var latestSearchText: String? = null
-
-    fun attachView(view: MoviesView) {
-        this.view = view
-        state?.let { view.render(it) }
-    }
-
-    fun detachView() {
-        this.view = null
-    }
 
     private val moviesInteractor = Creator.provideMoviesInteractor(context)
 
@@ -37,8 +27,8 @@ class MoviesSearchPresenter(private val context: Context) {
         searchRequest(newSearchText)
     }
 
-    fun onDestroy() {
-        handler.removeCallbacks(searchRunnable)
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(searchRunnable)
     }
 
     fun searchDebounce(changedText: String) {
@@ -52,7 +42,7 @@ class MoviesSearchPresenter(private val context: Context) {
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view?.render(
+            viewState.render(
                 MoviesState.Loading
             )
 
@@ -69,7 +59,7 @@ class MoviesSearchPresenter(private val context: Context) {
                                 renderState(
                                     MoviesState.Error(errorMessage = context.getString(R.string.something_went_wrong))
                                 )
-                                view?.showToast(errorMessage)
+                                viewState.showToast(errorMessage)
                             }
                             movies.isEmpty() -> {
                                 renderState(
@@ -89,8 +79,7 @@ class MoviesSearchPresenter(private val context: Context) {
     }
 
     private fun renderState(state: MoviesState) {
-        this.state = state
-        this.view?.render(state)
+        viewState.render(state)
     }
 
     companion object {
