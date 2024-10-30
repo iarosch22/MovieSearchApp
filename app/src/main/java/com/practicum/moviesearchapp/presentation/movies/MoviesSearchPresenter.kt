@@ -3,16 +3,26 @@ package com.practicum.moviesearchapp.presentation.movies
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import android.widget.Toast
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
-import com.practicum.moviesearchapp.ui.movies.MoviesAdapter
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.util.Creator
 
-class MoviesSearchPresenter(private val view: MoviesView, private val context: Context) {
+class MoviesSearchPresenter(private val context: Context) {
+
+    private var view: MoviesView? = null
+    private var state: MoviesState? = null
+    private var latestSearchText: String? = null
+
+    fun attachView(view: MoviesView) {
+        this.view = view
+        state?.let { view.render(it) }
+    }
+
+    fun detachView() {
+        this.view = null
+    }
 
     private val moviesInteractor = Creator.provideMoviesInteractor(context)
 
@@ -32,6 +42,9 @@ class MoviesSearchPresenter(private val view: MoviesView, private val context: C
     }
 
     fun searchDebounce(changedText: String) {
+        if (latestSearchText == changedText) {
+            return
+        }
         this.lastSearchText = changedText
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
@@ -39,7 +52,7 @@ class MoviesSearchPresenter(private val view: MoviesView, private val context: C
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            view.render(
+            view?.render(
                 MoviesState.Loading
             )
 
@@ -53,18 +66,18 @@ class MoviesSearchPresenter(private val view: MoviesView, private val context: C
 
                         when {
                             errorMessage != null -> {
-                                view.render(
+                                renderState(
                                     MoviesState.Error(errorMessage = context.getString(R.string.something_went_wrong))
                                 )
-                                view.showToast(errorMessage)
+                                view?.showToast(errorMessage)
                             }
                             movies.isEmpty() -> {
-                                view.render(
+                                renderState(
                                     MoviesState.Empty(message = context.getString(R.string.nothing_found))
                                 )
                             }
                             else -> {
-                                view.render(
+                                renderState(
                                     MoviesState.Content(movies = movies)
                                 )
                             }
@@ -73,6 +86,11 @@ class MoviesSearchPresenter(private val view: MoviesView, private val context: C
                 }
             })
         }
+    }
+
+    private fun renderState(state: MoviesState) {
+        this.state = state
+        this.view?.render(state)
     }
 
     companion object {
