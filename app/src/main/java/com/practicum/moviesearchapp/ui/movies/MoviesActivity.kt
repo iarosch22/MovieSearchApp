@@ -20,6 +20,7 @@ import com.practicum.moviesearchapp.ui.poster.PosterActivity
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesView
+import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 
 class MoviesActivity : Activity(), MoviesView {
 
@@ -87,30 +88,45 @@ class MoviesActivity : Activity(), MoviesView {
         return current
     }
 
-    override fun showPlaceholderMessage(isVisible: Boolean) {
-        placeholderMessage.isVisible = isVisible
+    private fun showLoading() {
+        moviesList.isVisible = false
+        placeholderMessage.isVisible = false
+        progressBar.isVisible = true
     }
 
-    override fun showMoviesList(isVisible: Boolean) {
-        moviesList.isVisible = isVisible
+    private fun showError(errorMessage: String) {
+        moviesList.isVisible = false
+        placeholderMessage.isVisible = true
+        progressBar.isVisible = false
+
+        placeholderMessage.text = errorMessage
     }
 
-    override fun showProgressBar(isVisible: Boolean) {
-        progressBar.isVisible = isVisible
+    private fun showEmpty(errorMessage: String) {
+        showError(errorMessage)
     }
 
-    override fun changePlaceholderText(newPlaceholderText: String) {
-        placeholderMessage.text = newPlaceholderText
-    }
+    private fun showContent(movies: List<Movie>) {
+        moviesList.isVisible = true
+        placeholderMessage.isVisible = false
+        progressBar.isVisible = false
 
-    override fun updateMoviesList(newMoviesList: List<Movie>) {
         adapter.movies.clear()
-        adapter.movies.addAll(newMoviesList)
+        adapter.movies.addAll(movies)
         adapter.notifyDataSetChanged()
     }
 
-    override fun showMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    override fun render(state: MoviesState) {
+        when(state) {
+            is MoviesState.Content -> showContent(state.movies)
+            is MoviesState.Empty -> showEmpty(state.message)
+            is MoviesState.Error -> showError(state.errorMessage)
+            MoviesState.Loading -> showLoading()
+        }
+    }
+
+    override fun showToast(additionalMessage: String) {
+        Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG).show()
     }
 
     companion object {

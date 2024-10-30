@@ -1,17 +1,9 @@
 package com.practicum.moviesearchapp.presentation.movies
 
-import com.practicum.moviesearchapp.domain.models.Movie
+import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 
 interface MoviesView {
-    fun showPlaceholderMessage(isVisible: Boolean)
+    fun render(state: MoviesState)
 
-    fun showMoviesList(isVisible: Boolean)
-
-    fun showProgressBar(isVisible: Boolean)
-
-    fun changePlaceholderText(newPlaceholderText: String)
-
-    fun updateMoviesList(newMoviesList: List<Movie>)
-
-    fun showMessage(message: String)
+    fun showToast(additionalMessage: String)
 }
