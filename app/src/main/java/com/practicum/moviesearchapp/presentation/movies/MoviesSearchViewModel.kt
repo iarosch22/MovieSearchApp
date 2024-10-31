@@ -1,20 +1,22 @@
 package com.practicum.moviesearchapp.presentation.movies
 
+import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.util.Creator
-import moxy.MvpPresenter
 
-class MoviesSearchPresenter(private val context: Context): MvpPresenter<MoviesView>() {
+class MoviesSearchViewModel(application: Application): AndroidViewModel(application) {
 
     private var latestSearchText: String? = null
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(context)
+    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication<Application>())
 
     private var lastSearchText: String? = null
 
@@ -42,7 +44,7 @@ class MoviesSearchPresenter(private val context: Context): MvpPresenter<MoviesVi
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
-            viewState.render(
+            renderState(
                 MoviesState.Loading
             )
 
@@ -57,13 +59,13 @@ class MoviesSearchPresenter(private val context: Context): MvpPresenter<MoviesVi
                         when {
                             errorMessage != null -> {
                                 renderState(
-                                    MoviesState.Error(errorMessage = context.getString(R.string.something_went_wrong))
+                                    MoviesState.Error(errorMessage = getApplication<Application>().getString(R.string.something_went_wrong))
                                 )
                                 viewState.showToast(errorMessage)
                             }
                             movies.isEmpty() -> {
                                 renderState(
-                                    MoviesState.Empty(message = context.getString(R.string.nothing_found))
+                                    MoviesState.Empty(message = getApplication<Application>().getString(R.string.nothing_found))
                                 )
                             }
                             else -> {

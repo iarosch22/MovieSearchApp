@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.moviesearchapp.MoviesApplication
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.models.Movie
-import com.practicum.moviesearchapp.presentation.movies.MoviesSearchPresenter
+import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.presentation.movies.MoviesView
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.ui.poster.PosterActivity
@@ -42,10 +42,10 @@ class MoviesActivity : MvpActivity(), MoviesView {
     private var textWatcher: TextWatcher? = null
 
     @InjectPresenter
-    lateinit var moviesSearchPresenter : MoviesSearchPresenter
+    lateinit var moviesSearchViewModel : MoviesSearchViewModel
 
     @ProvidePresenter
-    fun providePresenter(): MoviesSearchPresenter {
+    fun providePresenter(): MoviesSearchViewModel {
         return Creator.provideMoviesSearchPresenter(context = this.applicationContext)
     }
 
@@ -73,7 +73,7 @@ class MoviesActivity : MvpActivity(), MoviesView {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                moviesSearchPresenter?.searchDebounce(changedText = s?.toString() ?: "")
+                moviesSearchViewModel?.searchDebounce(changedText = s?.toString() ?: "")
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -87,10 +87,10 @@ class MoviesActivity : MvpActivity(), MoviesView {
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { queryInput.removeTextChangedListener(it) }
-        moviesSearchPresenter?.onDestroy()
+        moviesSearchViewModel?.onDestroy()
 
         if (isFinishing) {
-            (this.application as? MoviesApplication)?.moviesSearchPresenter = null
+            (this.application as? MoviesApplication)?.moviesSearchViewModel = null
         }
     }
 

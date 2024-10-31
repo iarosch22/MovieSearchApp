@@ -56,4 +56,5 @@ dependencies {
     implementation(libs.moxy)
     implementation(libs.moxy.android)
     kapt(libs.moxy.compiler)
+    implementation(libs.androidx.core.ktx.v190)
 }
