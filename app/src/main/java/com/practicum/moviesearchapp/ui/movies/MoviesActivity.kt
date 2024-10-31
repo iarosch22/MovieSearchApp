@@ -10,22 +10,20 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.moviesearchapp.MoviesApplication
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
-import com.practicum.moviesearchapp.presentation.movies.MoviesView
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.ui.poster.PosterActivity
-import com.practicum.moviesearchapp.util.Creator
-import moxy.MvpActivity
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 
-class MoviesActivity : MvpActivity(), MoviesView {
+
+class MoviesActivity : ComponentActivity() {
 
     private val adapter = MoviesAdapter {
         if (clickDebounce()) {
@@ -35,30 +33,24 @@ class MoviesActivity : MvpActivity(), MoviesView {
         }
     }
 
+    private lateinit var queryInput: EditText
+    private lateinit var placeholderMessage: TextView
+    private lateinit var moviesList: RecyclerView
+    private lateinit var progressBar: ProgressBar
+
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())
 
     private var textWatcher: TextWatcher? = null
 
-    @InjectPresenter
-    lateinit var moviesSearchViewModel : MoviesSearchViewModel
-
-    @ProvidePresenter
-    fun providePresenter(): MoviesSearchViewModel {
-        return Creator.provideMoviesSearchPresenter(context = this.applicationContext)
-    }
-
-    private lateinit var queryInput: EditText
-    private lateinit var placeholderMessage: TextView
-    private lateinit var moviesList: RecyclerView
-    private lateinit var progressBar: ProgressBar
+    private lateinit var viewModel: MoviesSearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movies)
 
-        //moviesSearchPresenter?.attachView(this)
+        viewModel = ViewModelProvider(this, MoviesSearchViewModel.getViewModelFactory())[MoviesSearchViewModel::class.java]
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
@@ -73,7 +65,7 @@ class MoviesActivity : MvpActivity(), MoviesView {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                moviesSearchViewModel?.searchDebounce(changedText = s?.toString() ?: "")
+                viewModel.searchDebounce(changedText = s?.toString() ?: "")
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -82,16 +74,19 @@ class MoviesActivity : MvpActivity(), MoviesView {
         }
 
         textWatcher?.let { queryInput.addTextChangedListener(it) }
+
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
+
+        viewModel.observeShowToast().observe(this) { toast ->
+            showToast(toast)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { queryInput.removeTextChangedListener(it) }
-        moviesSearchViewModel?.onDestroy()
-
-        if (isFinishing) {
-            (this.application as? MoviesApplication)?.moviesSearchViewModel = null
-        }
     }
 
     private fun clickDebounce() : Boolean {
@@ -131,7 +126,7 @@ class MoviesActivity : MvpActivity(), MoviesView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun render(state: MoviesState) {
+    private fun render(state: MoviesState) {
         when(state) {
             is MoviesState.Content -> showContent(state.movies)
             is MoviesState.Empty -> showEmpty(state.message)
@@ -140,7 +135,7 @@ class MoviesActivity : MvpActivity(), MoviesView {
         }
     }
 
-    override fun showToast(additionalMessage: String) {
+    private fun showToast(additionalMessage: String) {
         Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG).show()
     }
 
