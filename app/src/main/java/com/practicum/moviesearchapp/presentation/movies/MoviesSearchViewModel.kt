@@ -36,9 +36,9 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
     private val handler = Handler(Looper.getMainLooper())
 
     private val stateLiveData = MutableLiveData<MoviesState>()
-    private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveDate ->
-        liveDate.addSource(stateLiveData) { movieState ->
-            liveDate.value = when(movieState) {
+    private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
+        liveData.addSource(stateLiveData) { movieState ->
+            liveData.value = when(movieState) {
                 is MoviesState.Content -> MoviesState.Content(movieState.movies.sortedByDescending { it.inFavorite })
                 is MoviesState.Empty -> movieState
                 is MoviesState.Error -> movieState

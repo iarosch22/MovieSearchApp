@@ -16,10 +16,10 @@ class MovieViewHolder( parent: ViewGroup, private val clickListener: MoviesAdapt
     LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false)
 ) {
 
-    var cover: ImageView = itemView.findViewById(R.id.cover)
-    var title: TextView = itemView.findViewById(R.id.title)
-    var description: TextView = itemView.findViewById(R.id.description)
-    var inFavoriteToggle: ImageView = itemView.findViewById(R.id.favorite)
+    private var cover: ImageView = itemView.findViewById(R.id.cover)
+    private var title: TextView = itemView.findViewById(R.id.title)
+    private var description: TextView = itemView.findViewById(R.id.description)
+    private var inFavoriteToggle: ImageView = itemView.findViewById(R.id.favorite)
 
     fun bind(movie: Movie) {
         Glide.with(itemView)

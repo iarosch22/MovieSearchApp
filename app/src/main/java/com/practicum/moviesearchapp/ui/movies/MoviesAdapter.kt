@@ -10,11 +10,9 @@ class MoviesAdapter(private val clickListener: MovieClickListener) :
     var movies = ArrayList<Movie>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder =
-        // 1
         MovieViewHolder(parent, clickListener)
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        // 2
         holder.bind(movies.get(position))
     }
 
