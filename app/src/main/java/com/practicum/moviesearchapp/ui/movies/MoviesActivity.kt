@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +22,7 @@ import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.ui.poster.PosterActivity
 
 
-class MoviesActivity : ComponentActivity() {
+class MoviesActivity : AppCompatActivity() {
 
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
