@@ -1,11 +1,14 @@
 package com.practicum.moviesearchapp.data.network
 
 import com.practicum.moviesearchapp.data.NetworkClient
+import com.practicum.moviesearchapp.data.dto.MovieDetailsRequest
+import com.practicum.moviesearchapp.data.dto.MovieDetailsResponse
 import com.practicum.moviesearchapp.data.dto.MoviesSearchRequest
 import com.practicum.moviesearchapp.data.dto.MoviesSearchResponse
 import com.practicum.moviesearchapp.data.storage.LocalStorage
 import com.practicum.moviesearchapp.domain.api.MoviesRepository
 import com.practicum.moviesearchapp.domain.models.Movie
+import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.util.Resource
 
 class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val localStorage: LocalStorage) : MoviesRepository {
@@ -14,10 +17,7 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
         val response = networkClient.doRequest(MoviesSearchRequest(expression))
 
         return when(response.resultCode) {
-            -1 -> {
-                Resource.Error("Проверьте подключение к интернету")
-            }
-
+            -1 -> Resource.Error("Проверьте подключение к интернету")
             200 -> {
                 val stored = localStorage.getSavedToFavorites()
 
@@ -33,9 +33,34 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                 })
             }
 
-            else -> {
-                Resource.Error("Ошибка сервера")
+            else -> Resource.Error("Ошибка сервера")
+        }
+    }
+
+    override fun getMovieDetails(movieId: String): Resource<MovieDetails> {
+        val response = networkClient.doRequest(MovieDetailsRequest(movieId))
+
+        return when(response.resultCode) {
+            -1 -> Resource.Error("Проверьте подключение к интернету")
+            200 -> {
+                with(response as MovieDetailsResponse) {
+                    Resource.Success(
+                        MovieDetails(
+                            id = id,
+                            title = title,
+                            imDbRating = imDbRating,
+                            year = year,
+                            countries = countries,
+                            genres = genres,
+                            directors = directors,
+                            writers = writers,
+                            stars = stars,
+                            plot = plot,
+                        )
+                    )
+                }
             }
+            else -> Resource.Error("Ошибка сервера")
         }
     }
 

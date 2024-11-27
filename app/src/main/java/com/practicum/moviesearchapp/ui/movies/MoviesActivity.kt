@@ -18,7 +18,7 @@ import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
-import com.practicum.moviesearchapp.ui.poster.PosterActivity
+import com.practicum.moviesearchapp.ui.details.DetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -28,7 +28,7 @@ class MoviesActivity : AppCompatActivity() {
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    val intent = Intent(this@MoviesActivity, PosterActivity::class.java)
+                    val intent = Intent(this@MoviesActivity, DetailsActivity::class.java)
                     intent.putExtra("poster", movie.image)
                     startActivity(intent)
                 }
