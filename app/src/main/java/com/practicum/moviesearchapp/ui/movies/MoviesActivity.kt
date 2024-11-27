@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.moviesearchapp.R
@@ -20,6 +19,7 @@ import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import com.practicum.moviesearchapp.ui.poster.PosterActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MoviesActivity : AppCompatActivity() {
@@ -52,13 +52,11 @@ class MoviesActivity : AppCompatActivity() {
 
     private var textWatcher: TextWatcher? = null
 
-    private lateinit var viewModel: MoviesSearchViewModel
+    private val viewModel by viewModel<MoviesSearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movies)
-
-        viewModel = ViewModelProvider(this, MoviesSearchViewModel.getViewModelFactory())[MoviesSearchViewModel::class.java]
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
@@ -88,7 +86,9 @@ class MoviesActivity : AppCompatActivity() {
         }
 
         viewModel.observeShowToast().observe(this) { toast ->
-            showToast(toast)
+            if (toast != null) {
+                showToast(toast)
+            }
         }
     }
 

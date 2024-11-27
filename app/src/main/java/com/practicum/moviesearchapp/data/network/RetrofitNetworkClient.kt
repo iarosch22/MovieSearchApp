@@ -9,7 +9,7 @@ import com.practicum.moviesearchapp.data.dto.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient(private val context: Context) : NetworkClient {
+class RetrofitNetworkClient(private val imDbApiService: IMDbApiService, private val context: Context) : NetworkClient {
 
     private val imdbBaseUrl = "https://tv-api.com"
 
