@@ -8,6 +8,10 @@ android {
     namespace = "com.practicum.moviesearchapp"
     compileSdk = 34
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.practicum.moviesearchapp"
         minSdk = 29
@@ -58,4 +62,6 @@ dependencies {
     kapt(libs.moxy.compiler)
     implementation(libs.androidx.core.ktx.v190)
     implementation(libs.koin.android)
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 }

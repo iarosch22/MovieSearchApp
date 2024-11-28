@@ -80,14 +80,12 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
                             )
                             showToast.postValue(errorMessage)
                         }
-
                         movies.isEmpty() -> {
                             renderState(
                                 MoviesState.Empty(
                                     message = R.string.nothing_found.toString())
                                 )
                         }
-
                         else -> {
                             renderState(
                                 MoviesState.Content(
