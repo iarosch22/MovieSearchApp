@@ -1,7 +1,6 @@
 package com.practicum.moviesearchapp.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.practicum.moviesearchapp.data.NetworkClient
 import com.practicum.moviesearchapp.data.network.IMDbApiService
 import com.practicum.moviesearchapp.data.network.RetrofitNetworkClient
@@ -30,6 +29,6 @@ val dataModule = module {
     }
 
     single<NetworkClient> {
-        RetrofitNetworkClient(get(), androidContext())
+        RetrofitNetworkClient(androidContext())
     }
 }

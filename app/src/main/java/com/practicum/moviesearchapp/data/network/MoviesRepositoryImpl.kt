@@ -21,18 +21,19 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
             200 -> {
                 val stored = localStorage.getSavedToFavorites()
 
-                Resource.Success((response as MoviesSearchResponse).results.map {
-                    Movie(
-                        id = it.id,
-                        resultType = it.resultType,
-                        image = it.image,
-                        title = it.title,
-                        description = it.description,
-                        inFavorite = stored.contains(it.id),
+                with(response as MoviesSearchResponse) {
+                    Resource.Success( results.map {
+                        Movie(
+                            id = it.id,
+                            resultType = it.resultType,
+                            image = it.image,
+                            title = it.title,
+                            description = it.description,
+                            inFavorite = stored.contains(it.id),
                         )
-                })
+                    })
+                }
             }
-
             else -> Resource.Error("Ошибка сервера")
         }
     }
