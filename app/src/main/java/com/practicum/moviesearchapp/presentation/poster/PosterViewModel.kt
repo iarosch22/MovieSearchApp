@@ -5,13 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
 
-class PosterViewModel(private val imageUrl: String): ViewModel() {
-
-    fun setupPosterImage(url: String) {
-        Glide.with(applicationContext)
-            .load(url)
-            .into(poster)
-    }
+class PosterViewModel(imageUrl: String): ViewModel() {
 
     private val urlLiveData = MutableLiveData(imageUrl)
     fun observeUrl(): LiveData<String> = urlLiveData

@@ -1,34 +1,48 @@
 package com.practicum.moviesearchapp.ui.details
 
-import android.app.Activity
 import android.os.Bundle
-import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.practicum.moviesearchapp.util.Creator
-import com.practicum.moviesearchapp.R
-import com.practicum.moviesearchapp.presentation.poster.PosterViewModel
-import com.practicum.moviesearchapp.presentation.poster.PosterView
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayoutMediator
+import com.practicum.moviesearchapp.databinding.ActivityDetailsBinding
 
-class DetailsActivity : Activity(), PosterView {
+class DetailsActivity : AppCompatActivity() {
 
-    private lateinit var posterPresenter: PosterViewModel
-
-    private lateinit var poster: ImageView
+    private lateinit var binding: ActivityDetailsBinding
+    private lateinit var tabMediator: TabLayoutMediator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val imageUrl = intent.extras?.getString("poster", "") ?: ""
-        posterPresenter = Creator.providePosterPresenter(this, imageUrl)
+        Log.d("DETAILS", "message 1")
 
-        setContentView(R.layout.activity_details)
-        poster = findViewById(R.id.poster)
+        val poster = intent.getStringExtra("poster") ?: ""
+        val id = intent.getStringExtra("id") ?: ""
 
+        Log.d("DETAILS", "message 2")
+
+        binding.pager.adapter = DetailsViewPagerAdapter(
+            fragmentManager = supportFragmentManager,
+            lifecycle = lifecycle,
+            posterUrl = poster,
+            movieId = id
+        )
+
+        tabMediator = TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+            when(position) {
+                0 -> tab.text = "ПОСТЕР"
+                1 -> tab.text = "О ФИЛЬМЕ"
+            }
+        }
+
+        tabMediator.attach()
     }
 
-    override fun setupPosterImage(url: String) {
-        Glide.with(applicationContext)
-            .load(url)
-            .into(poster)
+    override fun onDestroy() {
+        super.onDestroy()
+        tabMediator.detach()
     }
+
 }
