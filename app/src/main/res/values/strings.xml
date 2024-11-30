@@ -2,4 +2,12 @@
     <string name="app_name">MovieSearchApp</string>
     <string name="something_went_wrong">Что-то пошло не так:(</string>
     <string name="nothing_found">Ничего не найдено:(</string>
+    <string name="app_rating">Рейтинг IMDb:</string>
+    <string name="app_year">Год:</string>
+    <string name="app_country">Страна:</string>
+    <string name="app_genre">Жанр:</string>
+    <string name="app_direction">Режиссёр:</string>
+    <string name="app_writer">Сценарист:</string>
+    <string name="app_actors">В ролях:</string>
+    <string name="app_plot">Сюжет:</string>
 </resources>

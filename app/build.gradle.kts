@@ -1,11 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
 }
 
 android {
     namespace = "com.practicum.moviesearchapp"
     compileSdk = 34
+
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.practicum.moviesearchapp"
@@ -35,6 +40,8 @@ android {
     }
 }
 
+val moxyVersion = "2.2.2"
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -50,5 +57,11 @@ dependencies {
     annotationProcessor(libs.compiler)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
+    implementation(libs.moxy)
+    implementation(libs.moxy.android)
+    kapt(libs.moxy.compiler)
+    implementation(libs.androidx.core.ktx.v190)
+    implementation(libs.koin.android)
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
 }
