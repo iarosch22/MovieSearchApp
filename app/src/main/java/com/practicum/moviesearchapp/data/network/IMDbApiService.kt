@@ -11,5 +11,5 @@ interface IMDbApiService {
     fun searchMovies(@Path("expression") expression: String): Call<MoviesSearchResponse>
 
     @GET("/en/API/Title/k_zcuw1ytf/{movie_id}")
-    fun getMovieDetails(@Path("moview_id") movieId: String): Call<MovieDetailsResponse>
+    fun getMovieDetails(@Path("movie_id") movieId: String): Call<MovieDetailsResponse>
 }
