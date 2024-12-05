@@ -3,12 +3,16 @@ package com.practicum.moviesearchapp.data.network
 import com.practicum.moviesearchapp.data.NetworkClient
 import com.practicum.moviesearchapp.data.dto.MovieDetailsRequest
 import com.practicum.moviesearchapp.data.dto.MovieDetailsResponse
+import com.practicum.moviesearchapp.data.dto.MovieFullCastRequest
+import com.practicum.moviesearchapp.data.dto.MovieFullCastResponse
 import com.practicum.moviesearchapp.data.dto.MoviesSearchRequest
 import com.practicum.moviesearchapp.data.dto.MoviesSearchResponse
 import com.practicum.moviesearchapp.data.storage.LocalStorage
 import com.practicum.moviesearchapp.domain.api.MoviesRepository
 import com.practicum.moviesearchapp.domain.models.Movie
+import com.practicum.moviesearchapp.domain.models.MovieCastPerson
 import com.practicum.moviesearchapp.domain.models.MovieDetails
+import com.practicum.moviesearchapp.domain.models.MovieFullCast
 import com.practicum.moviesearchapp.util.Resource
 
 class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val localStorage: LocalStorage) : MoviesRepository {
@@ -57,6 +61,59 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                             writers = writers,
                             stars = stars,
                             plot = plot,
+                        )
+                    )
+                }
+            }
+            else -> Resource.Error("Ошибка сервера")
+        }
+    }
+
+    override fun getMovieFullCast(movieId: String): Resource<MovieFullCast> {
+        val response = networkClient.doRequest(MovieFullCastRequest(movieId))
+
+        return when(response.resultCode) {
+            -1 -> Resource.Error("Проверьте подключение к интернету")
+            200 -> {
+                with(response as MovieFullCastResponse) {
+                    Resource.Success(
+                        data = MovieFullCast(
+                            imdbId = this.imDbId,
+                            fullTitle = this.fullTitle,
+                            directors = this.directors.items.map { director ->
+                                MovieCastPerson(
+                                    id = director.id,
+                                    name = director.name,
+                                    description = director.description,
+                                    image = null
+                                )
+                            },
+                            writers = this.writers.items.map { writer ->
+                                MovieCastPerson(
+                                    id = writer.id,
+                                    name = writer.name,
+                                    description = writer.description,
+                                    image = null,
+                                )
+                            },
+                            actors = this.actors.map { actor ->
+                                MovieCastPerson(
+                                    id = actor.id,
+                                    name = actor.name,
+                                    description = actor.asCharacter,
+                                    image = null,
+                                )
+                            },
+                            others = this.others.flatMap { other ->
+                                other.items.map { person ->
+                                    MovieCastPerson(
+                                        id = person.id,
+                                        name = person.name,
+                                        description = person.description,
+                                        image = null
+                                    )
+                                }
+                            }
                         )
                     )
                 }

@@ -28,6 +28,13 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
         }
     }
 
+    override fun getMovieFullCast(
+        movieId: String,
+        consumer: MoviesInteractor.MovieFullCastConsumer
+    ) {
+        TODO("Not yet implemented")
+    }
+
     override fun addMovieToFavorites(movie: Movie) {
         repository.addMovieToFavorites(movie)
     }

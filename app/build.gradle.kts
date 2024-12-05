@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    kotlin("kapt")
+    //kotlin("kapt")
 }
 
 android {
@@ -40,8 +40,6 @@ android {
     }
 }
 
-val moxyVersion = "2.2.2"
-
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -57,9 +55,6 @@ dependencies {
     annotationProcessor(libs.compiler)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.moxy)
-    implementation(libs.moxy.android)
-    kapt(libs.moxy.compiler)
     implementation(libs.androidx.core.ktx.v190)
     implementation(libs.koin.android)
     implementation("androidx.fragment:fragment-ktx:1.6.1")
