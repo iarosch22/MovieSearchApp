@@ -7,9 +7,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:visibility="gone"
@@ -34,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="16dp"/>
+                app:layout_constraintGuide_begin="19dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/right_guideline"
@@ -300,6 +301,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/showCastBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_show_cast_btn"
+            android:layout_margin="19dp"/>
+
+    </LinearLayout>
 
 </ScrollView>

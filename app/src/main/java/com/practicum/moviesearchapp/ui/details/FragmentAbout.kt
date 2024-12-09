@@ -1,15 +1,14 @@
 package com.practicum.moviesearchapp.ui.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import com.practicum.moviesearchapp.databinding.FragmentAboutBinding
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.presentation.about.AboutViewModel
 import com.practicum.moviesearchapp.ui.details.models.AboutState
+import com.practicum.moviesearchapp.ui.movieCast.MoviesCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -34,6 +33,12 @@ class FragmentAbout: BindingFragment<FragmentAboutBinding>() {
                 is AboutState.Content -> showMovieDetails(it.movieDetails)
                 is AboutState.Error -> showError(it.errorMessage)
             }
+        }
+
+        binding.showCastBtn.setOnClickListener {
+            startActivity(MoviesCastActivity.newInstance(
+                context = requireContext(),
+                movieId = requireArguments().getString(MOVIE_ID).orEmpty()))
         }
     }
 

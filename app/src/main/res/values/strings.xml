@@ -10,4 +10,5 @@
     <string name="app_writer">Сценарист:</string>
     <string name="app_actors">В ролях:</string>
     <string name="app_plot">Сюжет:</string>
+    <string name="app_show_cast_btn">SHOW CAST</string>
 </resources>

@@ -16,12 +16,9 @@ class DetailsActivity : AppCompatActivity() {
         binding = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Log.d("DETAILS", "message 1")
-
         val poster = intent.getStringExtra("poster") ?: ""
         val id = intent.getStringExtra("id") ?: ""
 
-        Log.d("DETAILS", "message 2")
 
         binding.pager.adapter = DetailsViewPagerAdapter(
             fragmentManager = supportFragmentManager,
