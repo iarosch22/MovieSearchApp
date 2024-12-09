@@ -33,10 +33,6 @@
         <activity
             android:name=".ui.details.DetailsActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.movies.MoviesActivity"
-            android:exported="true">
-        </activity>
     </application>
 
 </manifest>

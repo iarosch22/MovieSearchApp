@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import com.practicum.moviesearchapp.databinding.FragmentAboutBinding
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.presentation.about.AboutViewModel
+import com.practicum.moviesearchapp.ui.BindingFragment
 import com.practicum.moviesearchapp.ui.details.models.AboutState
 import com.practicum.moviesearchapp.ui.movieCast.MoviesCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FragmentAbout: BindingFragment<FragmentAboutBinding>() {
+class AboutFragment: BindingFragment<FragmentAboutBinding>() {
 
     private val aboutViewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
@@ -69,7 +70,7 @@ class FragmentAbout: BindingFragment<FragmentAboutBinding>() {
     companion object {
         private const val MOVIE_ID = "MOVIE_ID"
 
-        fun newInstance(movieId: String): FragmentAbout = FragmentAbout().apply {
+        fun newInstance(movieId: String): AboutFragment = AboutFragment().apply {
             arguments = Bundle().apply {
                 putString(MOVIE_ID, movieId)
             }
