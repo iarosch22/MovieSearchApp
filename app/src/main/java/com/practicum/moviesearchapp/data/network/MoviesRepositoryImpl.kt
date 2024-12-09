@@ -101,7 +101,7 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                                     id = actor.id,
                                     name = actor.name,
                                     description = actor.asCharacter,
-                                    image = null,
+                                    image = actor.image,
                                 )
                             },
                             others = this.others.flatMap { other ->

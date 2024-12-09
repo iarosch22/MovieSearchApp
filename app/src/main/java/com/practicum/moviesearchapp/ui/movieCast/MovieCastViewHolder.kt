@@ -1,29 +1,26 @@
 package com.practicum.moviesearchapp.ui.movieCast
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.databinding.ListItemCastBinding
-import com.practicum.moviesearchapp.domain.models.MovieCastPerson
+import com.practicum.moviesearchapp.presentation.movieCast.MoviesCastRVItem
 
-class MovieCastViewHolder( private val binding: ListItemCastBinding): RecyclerView.ViewHolder(binding.root) {
+class MovieCastViewHolder( private val binding: ListItemCastBinding ): RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(person: MovieCastPerson) {
-        if (person.image != null) {
-            binding.actorImage.visibility = View.VISIBLE
-
-            Glide.with(itemView)
-                .load(person.image)
-                .into(binding.actorImage)
+    fun bind(item: MoviesCastRVItem.PersonItem) {
+        if (item.data.image == null) {
+            binding.actorImage.isVisible = false
         } else {
-            binding.actorImage.visibility = View.GONE
+            Glide.with(itemView)
+                .load(item.data.image)
+                .into(binding.actorImage)
+
+            binding.actorImage.isVisible = true
         }
 
-        binding.personName.text = person.name
-        binding.personDescription.text = person.description
+        binding.personName.text = item.data.name
+        binding.personDescription.text = item.data.description
     }
 
 }

@@ -32,7 +32,12 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
         movieId: String,
         consumer: MoviesInteractor.MovieFullCastConsumer
     ) {
-        TODO("Not yet implemented")
+        executor.execute {
+            when(val resource = repository.getMovieFullCast(movieId)) {
+                is Resource.Error -> { consumer.consume(null, resource.message) }
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+            }
+        }
     }
 
     override fun addMovieToFavorites(movie: Movie) {

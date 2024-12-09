@@ -1,12 +1,9 @@
 package com.practicum.moviesearchapp.ui.details
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import com.practicum.moviesearchapp.databinding.FragmentAboutBinding
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.presentation.about.AboutViewModel
@@ -39,7 +36,9 @@ class FragmentAbout: BindingFragment<FragmentAboutBinding>() {
         }
 
         binding.showCastBtn.setOnClickListener {
-            startActivity(MoviesCastActivity.newInstance(requireContext()))
+            startActivity(MoviesCastActivity.newInstance(
+                context = requireContext(),
+                movieId = requireArguments().getString(MOVIE_ID).orEmpty()))
         }
     }
 
