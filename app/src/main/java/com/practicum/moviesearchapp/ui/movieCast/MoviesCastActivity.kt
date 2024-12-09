@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.practicum.moviesearchapp.databinding.ActivityMoviesCastBinding
 import com.practicum.moviesearchapp.presentation.movieCast.MovieCastViewModel
 import com.practicum.moviesearchapp.ui.movieCast.models.MovieCastState
@@ -19,7 +20,10 @@ class MoviesCastActivity : AppCompatActivity() {
         parametersOf(intent.getStringExtra(ARGS_MOVIE_ID))
     }
 
-    private val adapter = MoviesCastAdapter()
+    private val adapter = ListDelegationAdapter(
+        movieClassHeaderDelegate(),
+        movieCastPersonDelegate()
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
