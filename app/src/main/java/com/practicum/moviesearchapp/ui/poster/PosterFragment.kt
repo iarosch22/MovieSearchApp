@@ -1,4 +1,4 @@
-package com.practicum.moviesearchapp.ui.details
+package com.practicum.moviesearchapp.ui.poster
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.practicum.moviesearchapp.databinding.FragmentPosterBinding
 import com.practicum.moviesearchapp.presentation.poster.PosterViewModel
+import com.practicum.moviesearchapp.ui.BindingFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class FragmentPoster : BindingFragment<FragmentPosterBinding>() {
+class PosterFragment : BindingFragment<FragmentPosterBinding>() {
 
     private val posterViewModel: PosterViewModel by viewModel {
         parametersOf(requireArguments().getString(POSTER_URL))
@@ -41,7 +42,7 @@ class FragmentPoster : BindingFragment<FragmentPosterBinding>() {
     companion object {
         private const val POSTER_URL = "POSTER_URL"
 
-        fun newInstance(posterUrl: String): FragmentPoster = FragmentPoster().apply {
+        fun newInstance(posterUrl: String): PosterFragment = PosterFragment().apply {
             arguments = Bundle().apply {
                 putString(POSTER_URL, posterUrl)
             }

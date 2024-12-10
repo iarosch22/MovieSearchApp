@@ -1,23 +1,22 @@
 package com.practicum.moviesearchapp.ui.movieCast
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import com.practicum.moviesearchapp.databinding.ActivityMoviesCastBinding
+import com.practicum.moviesearchapp.databinding.FragmentMoviesCastBinding
 import com.practicum.moviesearchapp.presentation.movieCast.MovieCastViewModel
+import com.practicum.moviesearchapp.ui.BindingFragment
 import com.practicum.moviesearchapp.ui.movieCast.models.MovieCastState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class MoviesCastActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMoviesCastBinding
+class MoviesCastFragment: BindingFragment<FragmentMoviesCastBinding>() {
 
     private val movieCastViewModel: MovieCastViewModel by viewModel {
-        parametersOf(intent.getStringExtra(ARGS_MOVIE_ID))
+        parametersOf(requireArguments().getString(ARGS_MOVIE_ID))
     }
 
     private val adapter = ListDelegationAdapter(
@@ -25,13 +24,19 @@ class MoviesCastActivity : AppCompatActivity() {
         movieCastPersonDelegate()
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMoviesCastBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentMoviesCastBinding {
+        return FragmentMoviesCastBinding.inflate(inflater, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         binding.rvFullCast.adapter = adapter
 
-        movieCastViewModel.observeState().observe(this) {
+        movieCastViewModel.observeState().observe(viewLifecycleOwner) {
             when(it) {
                 is MovieCastState.Content -> showContent(it)
                 is MovieCastState.Error -> showError(it)
@@ -62,10 +67,12 @@ class MoviesCastActivity : AppCompatActivity() {
     companion object {
         private const val ARGS_MOVIE_ID = "movie_id"
 
-        fun newInstance(context: Context, movieId: String): Intent {
-            return Intent(context, MoviesCastActivity::class.java).apply {
-                putExtra(ARGS_MOVIE_ID, movieId)
-            }
+        const val TAG = "MoviesCastFragment"
+
+        fun newInstance(movieId: String) = MoviesCastFragment().apply {
+            arguments = bundleOf(
+                ARGS_MOVIE_ID to  movieId
+            )
         }
     }
 

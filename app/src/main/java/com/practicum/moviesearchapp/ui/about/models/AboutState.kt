@@ -1,4 +1,4 @@
-package com.practicum.moviesearchapp.ui.details.models
+package com.practicum.moviesearchapp.ui.about.models
 
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 

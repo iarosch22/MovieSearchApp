@@ -1,4 +1,4 @@
-package com.practicum.moviesearchapp.ui.details
+package com.practicum.moviesearchapp.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
