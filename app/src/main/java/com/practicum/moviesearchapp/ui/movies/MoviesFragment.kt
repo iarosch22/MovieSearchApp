@@ -1,23 +1,23 @@
 package com.practicum.moviesearchapp.ui.movies
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.databinding.FragmentMoviesBinding
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.ui.BindingFragment
-import com.practicum.moviesearchapp.ui.details.DetailsActivity
+import com.practicum.moviesearchapp.ui.details.DetailsFragment
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -27,11 +27,10 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    val intent = Intent(requireContext(), DetailsActivity::class.java)
-                    intent.putExtra("poster", movie.image)
-                    intent.putExtra("id", movie.id)
-                    Log.d("DETAILS", "message 0")
-                    startActivity(intent)
+                    parentFragmentManager.commit {
+                        replace(R.id.rootFragmentContainer, DetailsFragment.newInstance(movie.image, movie.id), DetailsFragment.TAG)
+                        addToBackStack(DetailsFragment.TAG)
+                    }
                 }
             }
 

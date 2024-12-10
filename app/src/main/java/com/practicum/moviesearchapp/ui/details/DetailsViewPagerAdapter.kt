@@ -4,6 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.practicum.moviesearchapp.ui.about.AboutFragment
+import com.practicum.moviesearchapp.ui.poster.PosterFragment
 
 class DetailsViewPagerAdapter(
     fragmentManager: FragmentManager,

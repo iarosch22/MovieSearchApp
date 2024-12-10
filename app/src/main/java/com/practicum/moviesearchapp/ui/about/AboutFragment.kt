@@ -1,15 +1,17 @@
-package com.practicum.moviesearchapp.ui.details
+package com.practicum.moviesearchapp.ui.about
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.commit
+import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.databinding.FragmentAboutBinding
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.presentation.about.AboutViewModel
 import com.practicum.moviesearchapp.ui.BindingFragment
-import com.practicum.moviesearchapp.ui.details.models.AboutState
-import com.practicum.moviesearchapp.ui.movieCast.MoviesCastActivity
+import com.practicum.moviesearchapp.ui.about.models.AboutState
+import com.practicum.moviesearchapp.ui.movieCast.MoviesCastFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -37,9 +39,14 @@ class AboutFragment: BindingFragment<FragmentAboutBinding>() {
         }
 
         binding.showCastBtn.setOnClickListener {
-            startActivity(MoviesCastActivity.newInstance(
-                context = requireContext(),
-                movieId = requireArguments().getString(MOVIE_ID).orEmpty()))
+            parentFragment?.parentFragmentManager?.commit {
+                replace(
+                    R.id.rootFragmentContainer,
+                    MoviesCastFragment.newInstance(requireArguments().getString(MOVIE_ID).orEmpty()),
+                    MoviesCastFragment.TAG
+                )
+                addToBackStack(MoviesCastFragment.TAG)
+            }
         }
     }
 
