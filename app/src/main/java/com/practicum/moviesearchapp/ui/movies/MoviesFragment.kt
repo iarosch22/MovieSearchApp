@@ -13,24 +13,27 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.moviesearchapp.R
+import com.practicum.moviesearchapp.core.navigator.Router
 import com.practicum.moviesearchapp.databinding.FragmentMoviesBinding
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.ui.BindingFragment
 import com.practicum.moviesearchapp.ui.details.DetailsFragment
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
+
+    private val router: Router by inject()
 
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    parentFragmentManager.commit {
-                        replace(R.id.rootFragmentContainer, DetailsFragment.newInstance(movie.image, movie.id), DetailsFragment.TAG)
-                        addToBackStack(DetailsFragment.TAG)
-                    }
+                    router.openFragment(
+                        DetailsFragment.newInstance(movie.image, movie.id)
+                    )
                 }
             }
 
