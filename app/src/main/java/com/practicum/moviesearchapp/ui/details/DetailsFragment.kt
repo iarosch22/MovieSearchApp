@@ -53,11 +53,7 @@ class DetailsFragment: BindingFragment<FragmentDetailsBinding>() {
         private const val ARGS_POSTER_KEY = "POSTER_KEY"
         private const val ARG_ID_KEY = "ID_KEY"
 
-        const val TAG = "DetailsFragment"
-
-        fun newInstance(poster: String, id: String) = DetailsFragment().apply {
-            arguments = bundleOf(ARGS_POSTER_KEY to poster, ARG_ID_KEY to id)
-        }
+        fun createArgs(poster: String, id: String): Bundle = bundleOf(ARGS_POSTER_KEY to poster, ARG_ID_KEY to id)
     }
 
 }

@@ -3,7 +3,6 @@ package com.practicum.moviesearchapp
 import android.app.Application
 import com.practicum.moviesearchapp.di.dataModule
 import com.practicum.moviesearchapp.di.interactorModule
-import com.practicum.moviesearchapp.di.navigationModule
 import com.practicum.moviesearchapp.di.repositoryModule
 import com.practicum.moviesearchapp.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
@@ -20,7 +19,6 @@ class MoviesApplication: Application() {
                 repositoryModule,
                 interactorModule,
                 viewModelModule,
-                navigationModule
             )
         }
     }

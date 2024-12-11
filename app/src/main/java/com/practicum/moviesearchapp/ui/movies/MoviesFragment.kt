@@ -10,29 +10,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.moviesearchapp.R
-import com.practicum.moviesearchapp.core.navigator.Router
 import com.practicum.moviesearchapp.databinding.FragmentMoviesBinding
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.ui.BindingFragment
 import com.practicum.moviesearchapp.ui.details.DetailsFragment
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
-
-    private val router: Router by inject()
 
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    router.openFragment(
-                        DetailsFragment.newInstance(movie.image, movie.id)
+                    findNavController().navigate(
+                        R.id.action_moviesFragment_to_detailsFragment,
+                        DetailsFragment.createArgs(movie.image, movie.id)
                     )
                 }
             }

@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.practicum.moviesearchapp.R
-import com.practicum.moviesearchapp.core.navigator.Router
 import com.practicum.moviesearchapp.databinding.FragmentAboutBinding
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.presentation.about.AboutViewModel
@@ -18,8 +18,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class AboutFragment: BindingFragment<FragmentAboutBinding>() {
-
-    private val router: Router by inject()
 
     private val aboutViewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
@@ -43,8 +41,9 @@ class AboutFragment: BindingFragment<FragmentAboutBinding>() {
         }
 
         binding.showCastBtn.setOnClickListener {
-            router.openFragment(
-                MoviesCastFragment.newInstance(requireArguments().getString(MOVIE_ID).orEmpty())
+            findNavController().navigate(
+                R.id.action_detailsFragment_to_moviesCastFragment,
+                MoviesCastFragment.createArgs(requireArguments().getString(MOVIE_ID).orEmpty())
             )
         }
     }
