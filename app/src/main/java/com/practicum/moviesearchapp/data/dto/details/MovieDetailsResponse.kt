@@ -1,4 +1,6 @@
-package com.practicum.moviesearchapp.data.dto
+package com.practicum.moviesearchapp.data.dto.details
+
+import com.practicum.moviesearchapp.data.dto.Response
 
 data class MovieDetailsResponse(val id: String,
                                 val title: String,

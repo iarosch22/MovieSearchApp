@@ -1,4 +1,6 @@
-package com.practicum.moviesearchapp.data.dto
+package com.practicum.moviesearchapp.data.dto.cast
+
+import com.practicum.moviesearchapp.data.dto.Response
 
 data class MovieFullCastResponse(
     val actors: List<ActorResponse>,

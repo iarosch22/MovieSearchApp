@@ -3,7 +3,8 @@ package com.practicum.moviesearchapp.ui.movies.models
 import com.practicum.moviesearchapp.domain.models.Movie
 
 sealed interface MoviesState {
-    object Loading : MoviesState
+
+    data object Loading : MoviesState
 
     data class Content(val movies: List<Movie>) : MoviesState
 

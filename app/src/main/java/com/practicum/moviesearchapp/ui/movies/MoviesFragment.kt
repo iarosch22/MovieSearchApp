@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.databinding.FragmentMoviesBinding
@@ -27,10 +27,10 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    parentFragmentManager.commit {
-                        replace(R.id.rootFragmentContainer, DetailsFragment.newInstance(movie.image, movie.id), DetailsFragment.TAG)
-                        addToBackStack(DetailsFragment.TAG)
-                    }
+                    findNavController().navigate(
+                        R.id.action_moviesFragment_to_detailsFragment,
+                        DetailsFragment.createArgs(movie.image, movie.id)
+                    )
                 }
             }
 

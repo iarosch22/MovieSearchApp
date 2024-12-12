@@ -1,12 +1,12 @@
 package com.practicum.moviesearchapp.data.network
 
 import com.practicum.moviesearchapp.data.NetworkClient
-import com.practicum.moviesearchapp.data.dto.MovieDetailsRequest
-import com.practicum.moviesearchapp.data.dto.MovieDetailsResponse
-import com.practicum.moviesearchapp.data.dto.MovieFullCastRequest
-import com.practicum.moviesearchapp.data.dto.MovieFullCastResponse
-import com.practicum.moviesearchapp.data.dto.MoviesSearchRequest
-import com.practicum.moviesearchapp.data.dto.MoviesSearchResponse
+import com.practicum.moviesearchapp.data.dto.details.MovieDetailsRequest
+import com.practicum.moviesearchapp.data.dto.details.MovieDetailsResponse
+import com.practicum.moviesearchapp.data.dto.cast.MovieFullCastRequest
+import com.practicum.moviesearchapp.data.dto.cast.MovieFullCastResponse
+import com.practicum.moviesearchapp.data.dto.movies.MoviesSearchRequest
+import com.practicum.moviesearchapp.data.dto.movies.MoviesSearchResponse
 import com.practicum.moviesearchapp.data.storage.LocalStorage
 import com.practicum.moviesearchapp.domain.api.MoviesRepository
 import com.practicum.moviesearchapp.domain.models.Movie

@@ -5,7 +5,9 @@ import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.domain.models.MovieFullCast
 
 interface MoviesInteractor {
+
     fun searchMovies(expression: String, consumer: MoviesConsumer)
+
     fun getMovieDetails(movieId: String, consumer: MovieDetailsConsumer)
     fun getMovieFullCast(movieId: String, consumer: MovieFullCastConsumer)
 
@@ -24,4 +26,5 @@ interface MoviesInteractor {
     fun addMovieToFavorites(movie: Movie)
 
     fun removeMovieFromFavorites(movie: Movie)
+
 }
