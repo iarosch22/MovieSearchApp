@@ -45,28 +45,6 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
         }
     }
 
-    override fun searchNames(expression: String): Resource<List<Name>> {
-        val response = networkClient.doRequest(NamesSearchRequest(expression))
-
-        return when(response.resultCode) {
-            -1 -> Resource.Error("Проверьте подключение к интернету")
-            200 -> {
-                with(response as NamesSearchResponse) {
-                    Resource.Success( results.map {
-                        Name(
-                            id = it.id,
-                            resultType = it.resultType,
-                            image = it.image,
-                            title = it.title,
-                            description = it.description
-                        )
-                    })
-                }
-            }
-            else -> Resource.Error("Проверьте подключение к интернету")
-        }
-    }
-
     override fun getMovieDetails(movieId: String): Resource<MovieDetails> {
         val response = networkClient.doRequest(MovieDetailsRequest(movieId))
 
