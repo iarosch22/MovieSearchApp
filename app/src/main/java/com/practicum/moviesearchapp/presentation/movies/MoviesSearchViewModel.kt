@@ -94,7 +94,6 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
                             )
                         }
                     }
-
                 }
             })
         }
