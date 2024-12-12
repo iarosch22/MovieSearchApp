@@ -5,5 +5,5 @@ import com.practicum.moviesearchapp.data.dto.Response
 data class NamesSearchResponse(
     val searchType: String,
     val expression: String,
-    val results: List<NamesDto>
+    val results: List<PersonDto>
 ): Response()

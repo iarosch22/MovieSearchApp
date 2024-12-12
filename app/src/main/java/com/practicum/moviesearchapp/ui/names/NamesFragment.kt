@@ -1,37 +1,34 @@
 package com.practicum.moviesearchapp.ui.names
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.moviesearchapp.databinding.FragmentNamesBinding
-import com.practicum.moviesearchapp.domain.models.Name
+import com.practicum.moviesearchapp.domain.models.Person
 import com.practicum.moviesearchapp.presentation.names.NamesViewModel
 import com.practicum.moviesearchapp.ui.BindingFragment
 import com.practicum.moviesearchapp.ui.names.models.NamesState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NamesFragment: BindingFragment<FragmentNamesBinding>() {
+class NamesFragment: Fragment() {
 
     private val adapter = NamesAdapter()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var binding: FragmentNamesBinding
 
     private var textWatcher: TextWatcher? = null
 
     private val viewModel by viewModel<NamesViewModel>()
 
-    override fun createBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentNamesBinding {
-        return FragmentNamesBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentNamesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,8 +56,8 @@ class NamesFragment: BindingFragment<FragmentNamesBinding>() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         textWatcher?.let { binding.queryInput.removeTextChangedListener(it) }
     }
 
@@ -82,19 +79,19 @@ class NamesFragment: BindingFragment<FragmentNamesBinding>() {
         showError(errorMessage)
     }
 
-    private fun showContent(names: List<Name>) {
+    private fun showContent(persons: List<Person>) {
         binding.namesRV.isVisible = true
         binding.placeholderMessage.isVisible = false
         binding.progressBar.isVisible = false
 
-        adapter.names.clear()
-        adapter.names.addAll(names)
+        adapter.persons.clear()
+        adapter.persons.addAll(persons)
         adapter.notifyDataSetChanged()
     }
 
     private fun render(state: NamesState) {
         when(state) {
-            is NamesState.Content -> showContent(state.names)
+            is NamesState.Content -> showContent(state.persons)
             is NamesState.Empty -> showEmpty(state.message)
             is NamesState.Error -> showError(state.errorMessage)
             NamesState.Loading -> showLoading()

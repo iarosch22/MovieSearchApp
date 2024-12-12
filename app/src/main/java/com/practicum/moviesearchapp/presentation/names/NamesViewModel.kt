@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.api.NamesInteractor
-import com.practicum.moviesearchapp.domain.models.Name
+import com.practicum.moviesearchapp.domain.models.Person
 import com.practicum.moviesearchapp.ui.names.models.NamesState
 
 class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() {
@@ -43,9 +43,9 @@ class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() 
             renderState(NamesState.Loading)
 
             namesInteractor.searchNames(newSearchText, object: NamesInteractor.NamesConsumer {
-                override fun consume(foundNames: List<Name>?, errorMessage: String?) {
-                    val names = mutableListOf<Name>()
-                    if (foundNames != null) names.addAll(foundNames)
+                override fun consume(foundPersons: List<Person>?, errorMessage: String?) {
+                    val persons = mutableListOf<Person>()
+                    if (foundPersons != null) persons.addAll(foundPersons)
 
                     when {
                         errorMessage != null -> {
@@ -53,7 +53,7 @@ class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() 
                                 NamesState.Error(errorMessage)
                             )
                         }
-                        names.isEmpty() -> {
+                        persons.isEmpty() -> {
                             renderState(
                                 NamesState.Empty(
                                     message = R.string.nothing_found.toString()
@@ -63,7 +63,7 @@ class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() 
                         else -> {
                             renderState(
                                 NamesState.Content(
-                                    names = names
+                                    persons = persons
                                 )
                             )
                         }

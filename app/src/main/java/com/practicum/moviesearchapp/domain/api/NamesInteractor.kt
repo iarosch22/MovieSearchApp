@@ -1,13 +1,13 @@
 package com.practicum.moviesearchapp.domain.api
 
-import com.practicum.moviesearchapp.domain.models.Name
+import com.practicum.moviesearchapp.domain.models.Person
 
 interface NamesInteractor {
 
     fun searchNames(expression: String, consumer: NamesConsumer)
 
     interface NamesConsumer {
-        fun consume(foundNames: List<Name>?, errorMessage: String?)
+        fun consume(foundPersons: List<Person>?, errorMessage: String?)
     }
 
 }

@@ -1,6 +1,6 @@
 package com.practicum.moviesearchapp.ui.names.models
 
-import com.practicum.moviesearchapp.domain.models.Name
+import com.practicum.moviesearchapp.domain.models.Person
 
 sealed interface NamesState {
 
@@ -8,7 +8,7 @@ sealed interface NamesState {
 
     data class Error(val errorMessage: String): NamesState
 
-    data class Content(val names: List<Name>): NamesState
+    data class Content(val persons: List<Person>): NamesState
 
     data class Empty(val message: String): NamesState
 

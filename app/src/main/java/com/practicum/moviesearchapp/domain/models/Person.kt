@@ -1,6 +1,6 @@
 package com.practicum.moviesearchapp.domain.models
 
-data class Name(
+data class Person(
     val id: String,
     val resultType: String,
     val image: String,

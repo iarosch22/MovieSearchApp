@@ -34,4 +34,13 @@
         android:id="@+id/moviesCastFragment"
         android:name="com.practicum.moviesearchapp.ui.movieCast.MoviesCastFragment"
         android:label="MoviesCastFragment" />
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.practicum.moviesearchapp.ui.info.InfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/namesFragment"
+        android:name="com.practicum.moviesearchapp.ui.names.NamesFragment"
+        android:label="NamesFragment" />
 </navigation>

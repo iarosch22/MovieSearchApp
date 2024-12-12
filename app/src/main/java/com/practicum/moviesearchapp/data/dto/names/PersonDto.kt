@@ -1,6 +1,6 @@
 package com.practicum.moviesearchapp.data.dto.names
 
-data class NamesDto(
+data class PersonDto(
     val id: String,
     val resultType: String,
     val image: String,

@@ -7,15 +7,12 @@ import com.practicum.moviesearchapp.data.dto.cast.MovieFullCastRequest
 import com.practicum.moviesearchapp.data.dto.cast.MovieFullCastResponse
 import com.practicum.moviesearchapp.data.dto.movies.MoviesSearchRequest
 import com.practicum.moviesearchapp.data.dto.movies.MoviesSearchResponse
-import com.practicum.moviesearchapp.data.dto.names.NamesSearchRequest
-import com.practicum.moviesearchapp.data.dto.names.NamesSearchResponse
 import com.practicum.moviesearchapp.data.storage.LocalStorage
 import com.practicum.moviesearchapp.domain.api.MoviesRepository
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.domain.models.MovieCastPerson
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.domain.models.MovieFullCast
-import com.practicum.moviesearchapp.domain.models.Name
 import com.practicum.moviesearchapp.util.Resource
 
 class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val localStorage: LocalStorage) : MoviesRepository {
