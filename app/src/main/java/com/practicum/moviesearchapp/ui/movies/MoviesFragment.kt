@@ -1,8 +1,6 @@
 package com.practicum.moviesearchapp.ui.movies
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -10,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.moviesearchapp.R
@@ -19,6 +18,7 @@ import com.practicum.moviesearchapp.presentation.movies.MoviesSearchViewModel
 import com.practicum.moviesearchapp.ui.BindingFragment
 import com.practicum.moviesearchapp.ui.details.DetailsFragment
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
+import debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
@@ -26,12 +26,7 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
-                if (clickDebounce()) {
-                    findNavController().navigate(
-                        R.id.action_moviesFragment_to_detailsFragment,
-                        DetailsFragment.createArgs(movie.image, movie.id)
-                    )
-                }
+                onMovieClickDebounce(movie)
             }
 
             override fun onFavoriteToggleClick(movie: Movie) {
@@ -41,9 +36,10 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
         }
     )
 
-    private var isClickAllowed = true
+    private lateinit var onMovieClickDebounce: (Movie) -> Unit
 
-    private val handler = Handler(Looper.getMainLooper())
+
+    private var isClickAllowed = true
 
     private var textWatcher: TextWatcher? = null
 
@@ -58,6 +54,17 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        onMovieClickDebounce = debounce<Movie>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { movie ->
+            findNavController().navigate(
+                R.id.action_moviesFragment_to_detailsFragment,
+                DetailsFragment.createArgs(movie.image, movie.id)
+            )
+        }
 
         binding.locationsRV.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.locationsRV.adapter = adapter
@@ -90,15 +97,6 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { binding.queryInput.removeTextChangedListener(it) }
-    }
-
-    private fun clickDebounce() : Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
     }
 
     private fun showLoading() {

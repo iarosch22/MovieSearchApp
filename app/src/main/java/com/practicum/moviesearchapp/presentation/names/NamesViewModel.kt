@@ -1,41 +1,39 @@
 package com.practicum.moviesearchapp.presentation.names
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.api.NamesInteractor
 import com.practicum.moviesearchapp.domain.models.Person
 import com.practicum.moviesearchapp.ui.names.models.NamesState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() {
-
-    private val handler = Handler(Looper.getMainLooper())
 
     private val stateLiveData = MutableLiveData<NamesState>()
     fun observeState(): LiveData<NamesState> = stateLiveData
 
     private var latestSearchText: String? = null
 
+    private var searchJob: Job? = null
+
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
             return
         }
 
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        latestSearchText = changedText
 
-        val searchRunnable = Runnable { searchRequest(changedText) }
+        searchJob?.cancel()
 
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest(changedText)
+        }
     }
 
     private fun searchRequest(newSearchText: String) {
@@ -79,7 +77,6 @@ class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() 
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 1000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 
 }
