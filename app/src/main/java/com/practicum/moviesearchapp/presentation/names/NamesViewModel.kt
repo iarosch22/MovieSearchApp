@@ -40,34 +40,25 @@ class NamesViewModel(private val namesInteractor: NamesInteractor): ViewModel() 
         if (newSearchText.isNotEmpty()) {
             renderState(NamesState.Loading)
 
-            namesInteractor.searchNames(newSearchText, object: NamesInteractor.NamesConsumer {
-                override fun consume(foundPersons: List<Person>?, errorMessage: String?) {
-                    val persons = mutableListOf<Person>()
-                    if (foundPersons != null) persons.addAll(foundPersons)
-
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                NamesState.Error(errorMessage)
-                            )
-                        }
-                        persons.isEmpty() -> {
-                            renderState(
-                                NamesState.Empty(
-                                    message = R.string.nothing_found.toString()
-                                )
-                            )
-                        }
-                        else -> {
-                            renderState(
-                                NamesState.Content(
-                                    persons = persons
-                                )
-                            )
-                        }
+            viewModelScope.launch {
+                namesInteractor
+                    .searchNames(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
-                }
-            })
+            }
+        }
+    }
+
+    private fun processResult(foundNames: List<Person>?, errorMessage: String?) {
+        val persons = mutableListOf<Person>()
+        if (foundNames != null) persons.addAll(foundNames)
+
+        when {
+            errorMessage != null -> renderState(NamesState.Error(errorMessage = errorMessage))
+
+            persons.isEmpty() -> renderState(NamesState.Empty(message = R.string.nothing_found.toString()))
+            else -> renderState(NamesState.Content(persons = persons))
         }
     }
 
