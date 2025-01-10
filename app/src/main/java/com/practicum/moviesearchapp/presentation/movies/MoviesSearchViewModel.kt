@@ -1,26 +1,23 @@
 package com.practicum.moviesearchapp.presentation.movies
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.moviesearchapp.R
 import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
+import debounce
+import kotlinx.coroutines.launch
 
 
 class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 1000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
-
-    private val handler = Handler(Looper.getMainLooper())
 
     private val stateLiveData = MutableLiveData<MoviesState>()
     private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
@@ -40,8 +37,8 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
 
     private var latestSearchText: String? = null
 
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    private val movieSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+        searchRequest(changedText)
     }
 
     fun searchDebounce(changedText: String) {
@@ -49,53 +46,50 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
             return
         }
 
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { searchRequest(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        latestSearchText = changedText
+        movieSearchDebounce(changedText)
     }
 
     private fun searchRequest(newSearchText: String) {
         if (newSearchText.isNotEmpty()) {
             renderState(MoviesState.Loading)
 
-            moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
-                    val movies = mutableListOf<Movie>()
-                    if (foundMovies != null) {
-                        movies.addAll(foundMovies)
+            viewModelScope.launch {
+                moviesInteractor
+                    .searchMovies(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
+            }
+        }
+    }
 
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                MoviesState.Error(errorMessage = R.string.something_went_wrong.toString())
-                            )
-                            showToast.postValue(errorMessage)
-                        }
-                        movies.isEmpty() -> {
-                            renderState(
-                                MoviesState.Empty(
-                                    message = R.string.nothing_found.toString())
-                                )
-                        }
-                        else -> {
-                            renderState(
-                                MoviesState.Content(
-                                    movies = movies,
-                                )
-                            )
-                        }
-                    }
-                }
-            })
+    private fun processResult(foundMovies: List<Movie>?, errorMessage: String?) {
+        val movies = mutableListOf<Movie>()
+        if (foundMovies != null) {
+            movies.addAll(foundMovies)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(
+                    MoviesState.Error(errorMessage = R.string.something_went_wrong.toString())
+                )
+                showToast.postValue(errorMessage)
+            }
+            movies.isEmpty() -> {
+                renderState(
+                    MoviesState.Empty(
+                        message = R.string.nothing_found.toString())
+                )
+            }
+            else -> {
+                renderState(
+                    MoviesState.Content(
+                        movies = movies,
+                    )
+                )
+            }
         }
     }
 

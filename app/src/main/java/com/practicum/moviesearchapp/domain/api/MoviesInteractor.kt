@@ -3,25 +3,15 @@ package com.practicum.moviesearchapp.domain.api
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.domain.models.MovieFullCast
+import kotlinx.coroutines.flow.Flow
 
 interface MoviesInteractor {
 
-    fun searchMovies(expression: String, consumer: MoviesConsumer)
+    fun searchMovies(expression: String): Flow<Pair<List<Movie>?, String?>>
 
-    fun getMovieDetails(movieId: String, consumer: MovieDetailsConsumer)
-    fun getMovieFullCast(movieId: String, consumer: MovieFullCastConsumer)
+    fun getMovieDetails(movieId: String): Flow<Pair<MovieDetails?, String?>>
 
-    interface MoviesConsumer {
-        fun consume(foundMovies: List<Movie>?, errorMessage: String?)
-    }
-
-    interface MovieDetailsConsumer {
-        fun consume(movieDetails: MovieDetails?, errorMessage: String?)
-    }
-
-    interface MovieFullCastConsumer {
-        fun consume(movieFullCast: MovieFullCast?, errorMessage: String?)
-    }
+    fun getMovieFullCast(movieId: String): Flow<Pair<MovieFullCast?, String?>>
 
     fun addMovieToFavorites(movie: Movie)
 
