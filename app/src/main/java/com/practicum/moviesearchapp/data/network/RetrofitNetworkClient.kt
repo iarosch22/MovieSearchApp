@@ -67,6 +67,7 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
             try {
                 val response = when(dto) {
                     is NamesSearchRequest -> imdbService.searchNames(dto.expression)
+                    is MoviesSearchRequest -> imdbService.searchMovies(dto.expression)
                     else -> { TODO() }
                 }
                 response.apply { resultCode = 200 }

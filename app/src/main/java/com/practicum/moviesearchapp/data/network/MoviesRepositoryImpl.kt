@@ -14,19 +14,21 @@ import com.practicum.moviesearchapp.domain.models.MovieCastPerson
 import com.practicum.moviesearchapp.domain.models.MovieDetails
 import com.practicum.moviesearchapp.domain.models.MovieFullCast
 import com.practicum.moviesearchapp.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val localStorage: LocalStorage) : MoviesRepository {
 
-    override fun searchMovies(expression: String): Resource<List<Movie>> {
-        val response = networkClient.doRequest(MoviesSearchRequest(expression))
+    override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
+        val response = networkClient.doRequestSuspend(MoviesSearchRequest(expression))
 
-        return when(response.resultCode) {
-            -1 -> Resource.Error("Проверьте подключение к интернету")
+        when(response.resultCode) {
+            -1 -> emit(Resource.Error("Проверьте подключение к интернету"))
             200 -> {
                 val stored = localStorage.getSavedToFavorites()
 
                 with(response as MoviesSearchResponse) {
-                    Resource.Success( results.map {
+                    val data = results.map {
                         Movie(
                             id = it.id,
                             resultType = it.resultType,
@@ -35,10 +37,12 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                             description = it.description,
                             inFavorite = stored.contains(it.id),
                         )
-                    })
+                    }
+
+                    emit(Resource.Success(data))
                 }
             }
-            else -> Resource.Error("Ошибка сервера")
+            else -> emit(Resource.Error("Ошибка сервера"))
         }
     }
 

@@ -1,6 +1,5 @@
 package com.practicum.moviesearchapp.presentation.movies
 
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +10,6 @@ import com.practicum.moviesearchapp.domain.api.MoviesInteractor
 import com.practicum.moviesearchapp.domain.models.Movie
 import com.practicum.moviesearchapp.ui.movies.models.MoviesState
 import debounce
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -21,8 +18,6 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 1000L
     }
-
-    private var searchJob: Job? = null
 
     private val stateLiveData = MutableLiveData<MoviesState>()
     private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
@@ -59,36 +54,42 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
         if (newSearchText.isNotEmpty()) {
             renderState(MoviesState.Loading)
 
-            moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
-                    val movies = mutableListOf<Movie>()
-                    if (foundMovies != null) {
-                        movies.addAll(foundMovies)
+            viewModelScope.launch {
+                moviesInteractor
+                    .searchMovies(newSearchText)
+                    .collect{ pair ->
+                        processResult(pair.first, pair.second)
                     }
+            }
+        }
+    }
 
-                    when {
-                        errorMessage != null -> {
-                            renderState(
-                                MoviesState.Error(errorMessage = R.string.something_went_wrong.toString())
-                            )
-                            showToast.postValue(errorMessage)
-                        }
-                        movies.isEmpty() -> {
-                            renderState(
-                                MoviesState.Empty(
-                                    message = R.string.nothing_found.toString())
-                                )
-                        }
-                        else -> {
-                            renderState(
-                                MoviesState.Content(
-                                    movies = movies,
-                                )
-                            )
-                        }
-                    }
-                }
-            })
+    private fun processResult(foundMovies: List<Movie>?, errorMessage: String?) {
+        val movies = mutableListOf<Movie>()
+        if (foundMovies != null) {
+            movies.addAll(foundMovies)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(
+                    MoviesState.Error(errorMessage = R.string.something_went_wrong.toString())
+                )
+                showToast.postValue(errorMessage)
+            }
+            movies.isEmpty() -> {
+                renderState(
+                    MoviesState.Empty(
+                        message = R.string.nothing_found.toString())
+                )
+            }
+            else -> {
+                renderState(
+                    MoviesState.Content(
+                        movies = movies,
+                    )
+                )
+            }
         }
     }
 
