@@ -57,7 +57,7 @@ class MoviesSearchViewModel(private val moviesInteractor: MoviesInteractor) : Vi
             viewModelScope.launch {
                 moviesInteractor
                     .searchMovies(newSearchText)
-                    .collect{ pair ->
+                    .collect { pair ->
                         processResult(pair.first, pair.second)
                     }
             }

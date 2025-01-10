@@ -25,32 +25,11 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         .build()
 
     private val imdbService = retrofit.create(IMDbApiService::class.java)
-    override fun doRequest(dto: Any): Response {
-        return Response()
-    }
 
     override suspend fun doRequestSuspend(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
-//        if (
-//            dto !is MoviesSearchRequest &&
-//            dto !is MovieDetailsRequest &&
-//            dto !is MovieFullCastRequest &&
-//            dto !is NamesSearchRequest
-//            ) {
-//            return Response().apply { resultCode = 400 }
-//        }
-
-//        val response = when (dto) {
-//            is MoviesSearchRequest -> imdbService.searchMovies(dto.expression).execute()
-//            is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId).execute()
-//            is NamesSearchRequest -> imdbService.searchNames(dto.expression).execute()
-//            else -> imdbService.getMovieFullCast((dto as MovieFullCastRequest).movieId).execute()
-//        }
-//
-//        val body = response.body()
-//        return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
 
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
@@ -68,7 +47,8 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
                 val response = when(dto) {
                     is NamesSearchRequest -> imdbService.searchNames(dto.expression)
                     is MoviesSearchRequest -> imdbService.searchMovies(dto.expression)
-                    else -> { TODO() }
+                    is MovieDetailsRequest -> imdbService.getMovieDetails(dto.movieId)
+                    else -> imdbService.getMovieFullCast((dto as MovieFullCastRequest).movieId)
                 }
                 response.apply { resultCode = 200 }
             } catch (e: Throwable) {

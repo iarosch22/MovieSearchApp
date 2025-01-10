@@ -10,9 +10,9 @@ interface MoviesRepository {
 
     fun searchMovies(expression: String): Flow<Resource<List<Movie>>>
 
-    fun getMovieDetails(movieId: String): Resource<MovieDetails>
+    fun getMovieDetails(movieId: String): Flow<Resource<MovieDetails>>
 
-    fun getMovieFullCast(movieId: String): Resource<MovieFullCast>
+    fun getMovieFullCast(movieId: String): Flow<Resource<MovieFullCast>>
 
     fun addMovieToFavorites(movie: Movie)
 

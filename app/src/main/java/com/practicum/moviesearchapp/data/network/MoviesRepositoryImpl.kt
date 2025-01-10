@@ -46,15 +46,14 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
         }
     }
 
-    override fun getMovieDetails(movieId: String): Resource<MovieDetails> {
-        val response = networkClient.doRequest(MovieDetailsRequest(movieId))
+    override fun getMovieDetails(movieId: String): Flow<Resource<MovieDetails>> = flow {
+        val response = networkClient.doRequestSuspend(MovieDetailsRequest(movieId))
 
-        return when(response.resultCode) {
-            -1 -> Resource.Error("Проверьте подключение к интернету")
+        when(response.resultCode) {
+            -1 -> emit(Resource.Error("Проверьте подключение к интернету"))
             200 -> {
                 with(response as MovieDetailsResponse) {
-                    Resource.Success(
-                        MovieDetails(
+                    val data = MovieDetails(
                             id = id,
                             title = title,
                             imDbRating = imDbRating,
@@ -66,21 +65,22 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                             stars = stars,
                             plot = plot,
                         )
-                    )
+
+                    emit(Resource.Success(data))
                 }
             }
-            else -> Resource.Error("Ошибка сервера")
+            else -> emit(Resource.Error("Ошибка сервера"))
         }
     }
 
-    override fun getMovieFullCast(movieId: String): Resource<MovieFullCast> {
-        val response = networkClient.doRequest(MovieFullCastRequest(movieId))
+    override fun getMovieFullCast(movieId: String): Flow<Resource<MovieFullCast>> = flow {
+        val response = networkClient.doRequestSuspend(MovieFullCastRequest(movieId))
 
-        return when(response.resultCode) {
-            -1 -> Resource.Error("Проверьте подключение к интернету")
+        when(response.resultCode) {
+            -1 -> emit(Resource.Error("Проверьте подключение к интернету"))
             200 -> {
                 with(response as MovieFullCastResponse) {
-                    Resource.Success(
+                    emit(Resource.Success(
                         data = MovieFullCast(
                             imdbId = this.imDbId,
                             fullTitle = this.fullTitle,
@@ -119,10 +119,10 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                                 }
                             }
                         )
-                    )
+                    ))
                 }
             }
-            else -> Resource.Error("Ошибка сервера")
+            else -> emit(Resource.Error("Ошибка сервера"))
         }
     }
 
