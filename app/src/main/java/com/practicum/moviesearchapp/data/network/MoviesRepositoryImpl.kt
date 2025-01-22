@@ -1,10 +1,13 @@
 package com.practicum.moviesearchapp.data.network
 
 import com.practicum.moviesearchapp.data.NetworkClient
+import com.practicum.moviesearchapp.data.converters.MovieDbConvertor
+import com.practicum.moviesearchapp.data.db.AppDatabase
 import com.practicum.moviesearchapp.data.dto.details.MovieDetailsRequest
 import com.practicum.moviesearchapp.data.dto.details.MovieDetailsResponse
 import com.practicum.moviesearchapp.data.dto.cast.MovieFullCastRequest
 import com.practicum.moviesearchapp.data.dto.cast.MovieFullCastResponse
+import com.practicum.moviesearchapp.data.dto.movies.MovieDto
 import com.practicum.moviesearchapp.data.dto.movies.MoviesSearchRequest
 import com.practicum.moviesearchapp.data.dto.movies.MoviesSearchResponse
 import com.practicum.moviesearchapp.data.storage.LocalStorage
@@ -17,7 +20,11 @@ import com.practicum.moviesearchapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val localStorage: LocalStorage) : MoviesRepository {
+class MoviesRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val localStorage: LocalStorage,
+    private val appDatabase: AppDatabase,
+    private val movieDbConvertor: MovieDbConvertor,) : MoviesRepository {
 
     override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
         val response = networkClient.doRequestSuspend(MoviesSearchRequest(expression))
@@ -38,7 +45,7 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                             inFavorite = stored.contains(it.id),
                         )
                     }
-
+                    saveMovie(results)
                     emit(Resource.Success(data))
                 }
             }
@@ -85,12 +92,7 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
                             imdbId = this.imDbId,
                             fullTitle = this.fullTitle,
                             directors = this.directors.items.map { director ->
-                                MovieCastPerson(
-                                    id = director.id,
-                                    name = director.name,
-                                    description = director.description,
-                                    image = null
-                                )
+                                MovieCastPerson(id = director.id, name = director.name, description = director.description, image = null)
                             },
                             writers = this.writers.items.map { writer ->
                                 MovieCastPerson(
@@ -133,4 +135,10 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient, private val
     override fun removeMovieFromFavorites(movie: Movie) {
         localStorage.removeFromFavorites(movie.id)
     }
+
+    private suspend fun saveMovie(movies: List<MovieDto>) {
+        val moviesEntities = movies.map { movie -> movieDbConvertor.map(movie) }
+        appDatabase.movieDao().insertMovies(moviesEntities)
+    }
+
 }
