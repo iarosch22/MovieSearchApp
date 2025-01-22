@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    kotlin("kapt")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.practicum.moviesearchapp"
-    compileSdk = 34
+    compileSdk = 35
 
     buildFeatures {
         viewBinding = true

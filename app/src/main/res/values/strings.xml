@@ -15,4 +15,5 @@
     <string name="app_movies_nav">Movies</string>
     <string name="app_persons_nav">Persons</string>
     <string name="app_info_nav">Info</string>
+    <string name="app_history_nav">History</string>
 </resources>

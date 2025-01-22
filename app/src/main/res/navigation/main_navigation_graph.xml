@@ -43,4 +43,9 @@
         android:id="@+id/namesFragment"
         android:name="com.practicum.moviesearchapp.ui.names.NamesFragment"
         android:label="NamesFragment" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.practicum.moviesearchapp.ui.history.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" />
 </navigation>
