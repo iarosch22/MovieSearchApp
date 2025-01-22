@@ -1,5 +1,6 @@
 package com.practicum.moviesearchapp.di
 
+import com.practicum.moviesearchapp.data.converters.MovieDbConvertor
 import com.practicum.moviesearchapp.data.network.MoviesRepositoryImpl
 import com.practicum.moviesearchapp.data.network.NamesRepositoryImpl
 import com.practicum.moviesearchapp.data.storage.LocalStorage
@@ -20,4 +21,6 @@ val repositoryModule = module {
     single<LocalStorage> {
         LocalStorage(get())
     }
+
+    factory { MovieDbConvertor() }
 }

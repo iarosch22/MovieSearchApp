@@ -1,7 +1,9 @@
 package com.practicum.moviesearchapp.di
 
 import android.content.Context
+import androidx.room.Room
 import com.practicum.moviesearchapp.data.NetworkClient
+import com.practicum.moviesearchapp.data.db.AppDatabase
 import com.practicum.moviesearchapp.data.network.IMDbApiService
 import com.practicum.moviesearchapp.data.network.RetrofitNetworkClient
 import com.practicum.moviesearchapp.data.storage.LocalStorage
@@ -30,5 +32,10 @@ val dataModule = module {
 
     single<NetworkClient> {
         RetrofitNetworkClient(androidContext())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 }
