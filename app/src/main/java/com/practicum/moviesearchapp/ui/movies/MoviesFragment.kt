@@ -38,9 +38,6 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
 
     private lateinit var onMovieClickDebounce: (Movie) -> Unit
 
-
-    private var isClickAllowed = true
-
     private var textWatcher: TextWatcher? = null
 
     private val viewModel by viewModel<MoviesSearchViewModel>()
@@ -55,7 +52,7 @@ class MoviesFragment: BindingFragment<FragmentMoviesBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        onMovieClickDebounce = debounce<Movie>(
+        onMovieClickDebounce = debounce(
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
             false
